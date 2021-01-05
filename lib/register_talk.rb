@@ -1,5 +1,7 @@
 require_relative './talk_list'
 require_relative './create_talk'
+require_relative './create_morning_session'
+require_relative './create_afternoon_session'
 
 
 class RegisterTalk
@@ -18,100 +20,33 @@ class RegisterTalk
     end
 
     def register_track_one_before_lunch
-        day, month, year = Time.now.day, Time.now.month, Time.now.year
-        startTime = Time.local(year, month, day, 9)
-        available_minutes_before_lunch = 180
-        @updated_list.map.with_index do |x,i|
-        if i == 0 
-            x[:startTime] = startTime
-        else
-            x[:startTime] = TALK_LIST[i-1][:endTime]
-        end 
-        x[:endTime] =  x[:startTime] + (x[:duration] * 60)
-        available_minutes_before_lunch = available_minutes_before_lunch - x[:duration]
-        duration = x[:duration]
-        name = x[:name]
-        start = x[:startTime]
-        break if available_minutes_before_lunch < 0
-        talk = CreateTalk.new(name, start, duration)
-        @track1 << talk
-        @updated_list[i][:registered?] = true
-        end
+
+    session = CreateMorningSession.new(@track1, @updated_list)
+
+    @track1, @updated_list = session.create_track
 
     end
 
     def register_track_two_before_lunch
-        day, month, year = Time.now.day, Time.now.month, Time.now.year
-        startTime = Time.local(year, month, day, 9)
-        available_minutes_before_lunch = 180
 
-        @updated_list.map.with_index do |x,i|
+    session = CreateMorningSession.new(@track2, @updated_list)
 
-        if x[:registered?] == false
-
-            available_minutes_before_lunch = available_minutes_before_lunch - x[:duration]
-
-            break if available_minutes_before_lunch < 0
-            x[:startTime] = startTime
-            x[:endTime] =  x[:startTime] + (x[:duration] * 60)
-            startTime = x[:endTime]
-            duration = x[:duration]
-            name = x[:name]
-            start = x[:startTime]
-            talk = CreateTalk.new(name, start, duration)
-            @track2 << talk
-            @updated_list[i][:registered?] = true
-        end
-    end
-
+    @track2, @updated_list = session.create_track
 
     end
 
     def register_track_one_after_lunch
-        day, month, year = Time.now.day, Time.now.month, Time.now.year
-        startTime = Time.local(year, month, day, 1)
-        available_minutes_after_lunch = 240
-        @updated_list.map.with_index do |x,i|
-            if x[:registered?] == false
 
-                available_minutes_after_lunch = available_minutes_after_lunch - x[:duration]
-                break if available_minutes_after_lunch < 0
-                
-                x[:startTime] = startTime
-                x[:endTime] =  x[:startTime] + (x[:duration] * 60)
-                startTime = x[:endTime]
-                duration = x[:duration]
-                name = x[:name]
-                start = x[:startTime]
-                talk = CreateTalk.new(name, start, duration)
-                @track1 << talk
-                @updated_list[i][:registered?] = true
-                end
-            end
+        session = CreateAfternoonSession.new(@track1, @updated_list)
+
+        @track1, @updated_list = session.create_track
 
     end
 
     def register_track_two_after_lunch
-        day, month, year = Time.now.day, Time.now.month, Time.now.year
-        startTime = Time.local(year, month, day, 1)
-        available_minutes_after_lunch = 240
+    session = CreateAfternoonSession.new(@track2, @updated_list)
 
-
-        @updated_list.map.with_index do |x,i|
-            if x[:registered?] == false
-            available_minutes_after_lunch = available_minutes_after_lunch - x[:duration]
-            break if available_minutes_after_lunch < 0
-            x[:startTime] = startTime
-        x[:endTime] =  x[:startTime] + (x[:duration] * 60)
-        startTime = x[:endTime]
-        duration = x[:duration]
-        name = x[:name]
-        start = x[:startTime]
-        talk = CreateTalk.new(name, start, duration)
-        @track2 << talk
-        @updated_list[i][:registered?] = true
-        end
-    end
+    @track2, @updated_list = session.create_track
 
     end
 
