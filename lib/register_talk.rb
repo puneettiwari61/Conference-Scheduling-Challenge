@@ -13,9 +13,9 @@ class RegisterTalk
         register_track_two_before_lunch
         register_track_one_after_lunch
         register_track_two_after_lunch
-        puts "\n#{@track1}"
-        puts "\n#{@track2}"
-
+        # puts "\n#{@track1}"
+        # puts "\n#{@track2}"
+        print_talks
     end
 
     def register_track_one_before_lunch
@@ -122,6 +122,14 @@ class RegisterTalk
     end
         # @track2.map {|x| puts x}   
         # puts @updated_list
+    end
+
+    def print_talks
+        puts "\nTrack 1"
+        @track1.map {|x| puts "#{x[:endTime].strftime("%I:%M %p")} #{x[:name]} #{x[:duration]} min"}
+        puts "\nTrack2"
+        @track2.each {|x| puts "#{x[:endTime].strftime("%I:%M %p")} #{x[:name]} #{x[:duration]} min"}
+
     end
 
 end
