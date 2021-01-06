@@ -1,7 +1,5 @@
 require_relative './talk_list'
-require_relative './create_talk'
-require_relative './create_morning_session'
-require_relative './create_afternoon_session'
+require_relative './session'
 
 
 class RegisterTalk
@@ -20,8 +18,8 @@ class RegisterTalk
     end
 
     def register_track_one_before_lunch
-
-    session = CreateMorningSession.new(@track1, @updated_list)
+    
+    session = Session.new(@track1, @updated_list, "morning")
 
     @track1, @updated_list = session.create_track
 
@@ -29,7 +27,9 @@ class RegisterTalk
 
     def register_track_two_before_lunch
 
-    session = CreateMorningSession.new(@track2, @updated_list)
+
+    session = Session.new(@track2, @updated_list, "morning")
+
 
     @track2, @updated_list = session.create_track
 
@@ -37,14 +37,16 @@ class RegisterTalk
 
     def register_track_one_after_lunch
 
-        session = CreateAfternoonSession.new(@track1, @updated_list)
+        session = Session.new(@track1, @updated_list, "afternoon")
+
 
         @track1, @updated_list = session.create_track
 
     end
 
     def register_track_two_after_lunch
-    session = CreateAfternoonSession.new(@track2, @updated_list)
+
+    session = Session.new(@track2, @updated_list, "afternoon")
 
     @track2, @updated_list = session.create_track
 
